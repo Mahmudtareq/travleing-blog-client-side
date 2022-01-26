@@ -16,6 +16,7 @@ import MyOrder from './components/MyOrder/Myorder';
 import ShowAllServices from './components/ShowAllServices/ShowAllServices';
 import PrivateRoute from './components/PrivateRoute/PrivateRoute';
 import ManageOrder from './components/ManageOrder/ManageOrder';
+import Register from './components/Register/Register';
 
 function App() {
   return (
@@ -49,7 +50,10 @@ function App() {
           </PrivateRoute>
           <Route exact path="/login">
             <Login></Login>
-          </Route>
+            </Route>
+            <Route path="/register">
+              <Register></Register>
+            </Route>
         </Switch>
     
     </Router>

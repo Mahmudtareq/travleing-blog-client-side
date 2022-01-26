@@ -1,16 +1,14 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import MenuBar from '../MenuBar/MenuBar';
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { } from "@fortawesome/free-solid-svg-icons";
-import { faGoogle } from '@fortawesome/free-brands-svg-icons';
-import Footer from '../Footer/Footer';
+import { Alert, Button, CircularProgress, TextField, Typography ,Container,Grid} from '@mui/material';
 // import useFirebase from '../../hooks/useFirebase';
 import useAuth from '../../hooks/useAuth';
 import { useHistory ,useLocation } from 'react-router';
+import { useState } from 'react';
 
 const Login = () => {
-    const {signInWithGoogle ,setUser} = useAuth();
+    const [loginData, setLoginData] = useState({});
+    const { user, loginUser, isLoading, error, signInWithGoogle ,setUser} = useAuth();
     const history = useHistory()
     const location = useLocation()
     const url = location.state?.from ||"/home"
@@ -26,42 +24,71 @@ const Login = () => {
         // console.log('clicked')
 
     }
+    const handleOnChange = e => {
+        const filed = e.target.name;
+        const value = e.target.value;
+        // console.log(filed , value)
+        const newLoginData = { ...loginData };
+        newLoginData[filed] = value;
+        setLoginData(newLoginData)
+    }
+     const handleLoginSubmit = e => {
+        loginUser(loginData.email, loginData.password, location, history);
+        e.preventDefault();
+    }
+// const handleGoogleSignIn = () => {
+//         signInWithGoogle(location, history);
 
-
+//     }
     return (
-        <div>
-            <MenuBar></MenuBar>
-            {/* ----------------------------------- */}
-         <div className="">
-            <div className=" banner-page">
-                <div className="">
-                <button className="btn btn-primary px-5 mt-5">
-                    <NavLink className="text-white text-decoration-none" to="/home">Go Back Home</NavLink>
-                </button>
-                <p className="fs-1 mt-2 text-black">LOGIN PAGE</p>
+        <Container>
+             <Grid container spacing={2}>
+                <Grid item sx={{ mt: 10}} xs={12} md={6}>
+                    <Typography sx={{ color: 'info.main', mt: 6 ,textAlign:'center'}} variant="h6" gutterBottom>
+                        LOGIN
+                    </Typography>
+                    <form onSubmit={handleLoginSubmit}>
+                        <TextField
+                            sx={{ width: '75%', m: 2 }}
+                            id="standard-basic"
+                            label="Your Email"
+                            name="email"
+                            type="email"
+                            onChange={handleOnChange}
+                            variant="standard" />
+                        <TextField
+                            sx={{ width: '75%', m: 2 }}
+                            id="standard-basic"
+                            label="Your Password"
+                            type="password"
+                            name="password"
+                            onChange={handleOnChange}
+                            variant="standard" />
+                        
+                       
+                        <Button variant="contained" sx={{ width: '75%', m: 2 }}
+                            type="submit">
+                            Login</Button>
+                        <NavLink
+                            style={{ textDecoration: 'none' }}
+                            to="/register">
+                            <Button sx={{textAlign:'center',color:'success.main'}} variant="text">New User? Please Register</Button>
+                        </NavLink>
 
-                </div>
-            </div>
-                     
-
-            </div>
-            <div className="container">
-               <from>
-                    <h2 className="my-5 text-info">Please Login</h2>
-                    <input className="form-control  w-50 mx-auto" type="email"  name="" id="" placeholder="Email" required />
-                    <br />
-                    <input className="form-control w-50  mx-auto" type="password" name="" id="" placeholder="Password" required />
-                    <br />
-                   
-                    <button  className="btn btn-primary px-5" >Please Login</button>
-                    <br />
-                </from> 
-                <button onClick={handleGoogleLogin} className="my-5 mx-auto btn bg-primary px-4"><span className="text-danger me-3
-                "><FontAwesomeIcon icon={faGoogle} /></span>   Google LogIn</button>
-
-                </div>
-                <Footer></Footer>
-        </div>
+                       
+                        {isLoading && <CircularProgress />}
+                      
+                        {user?.email && <Alert severity="success"> User Login Successfully ???</Alert>}
+                        {error && <Alert severity="error"> {error}</Alert>}
+                    </form>
+                    <Button onClick={handleGoogleLogin} variant="contained">Google SignIn</Button>
+               </Grid>
+            <Grid item sx={{mt:10}} xs={12} md={6}>
+                
+            </Grid>
+            </Grid>
+           
+        </Container>
     );
 };
 
